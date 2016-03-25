@@ -1,0 +1,23 @@
+html
+    include ./partial/head.jade
+    script(type="text/javascript")
+      //- Set the challenge_id so that it can be used in app.js on a
+      //- per-solution basis.
+      | var challenge_id = #{id};
+    script(src="/js/app.js")
+    
+    body
+        h2 #{title}
+        p !{description}
+        pre
+            code
+              | // Example JS code
+              | var a = 7;
+              
+        div(id="code",contentEditable="true")
+          | function hello(num) {
+          |   return num * 2;
+          | }
+        button(id="test") Test solution
+        div(id="status") Unknown
+        button(id="next") Next problem
