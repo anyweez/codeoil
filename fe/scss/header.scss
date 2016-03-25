@@ -1,0 +1,37 @@
+header {
+    padding: 15px 1%;
+    background-color: #BFD8BD;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 3px solid #98C9A3;
+    box-shadow: 0 2px 4px #333;
+    h1 {
+        display: inline-block;
+        margin: 0 1%;
+        vertical-align: middle;
+    }
+    h2 {
+        display: inline-block;
+        margin: 0 1%;
+        vertical-align: middle;
+        font-weight: 200;
+    }
+    #login {
+        display: inline-block;
+        float: right;
+        vertical-align: middle;
+        text-align: right;
+        padding: 3px 8px;
+        img {
+            width: 25px;
+            height: 25px;
+            vertical-align: middle;
+        }
+        p {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0;
+            margin-right: 10px;
+        }
+    }
+}
