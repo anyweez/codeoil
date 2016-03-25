@@ -1,6 +1,9 @@
 /* jslint browser: true */
 window.addEventListener('load', function () {
-    console.log('hello');
+    // Load ACE code editor on the #code element
+    var editor = ace.edit('code');
+    editor.setTheme('ace/theme/xcode');
+    editor.getSession().setMode('ace/mode/javascript');
 
     var testButton = document.getElementById('test');
     testButton.addEventListener('click', function () {
@@ -13,15 +16,15 @@ window.addEventListener('load', function () {
             status.className = '';
             // Finished
             if (event.data.failures === 0 && event.data.progress > 0.99) {
-                status.textContent = 'Success';
+                status.textContent = 'success';
                 status.classList.add('status-success');
                 // In progress
             } else if (event.data.failures === 0) {
-                status.textContent = 'In progress';
+                status.textContent = 'in progress';
                 status.classList.add('status-in-progress');
                 // Failed
             } else {
-                status.textContent = 'Failed';
+                status.textContent = 'failed';
                 status.classList.add('status-failed');
             }
         });
@@ -29,7 +32,7 @@ window.addEventListener('load', function () {
         worker.postMessage({
             iterations: 10,
             seed: 1234,
-            code: document.getElementById('code').textContent,
+            code: editor.getValue(),
         });
 
     });

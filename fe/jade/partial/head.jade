@@ -1,4 +1,9 @@
 head
-    title Hello!
+    if title
+        title #{title}
+    else
+        title code oil
     
+    link(href='https://fonts.googleapis.com/css?family=Arimo:400,700',rel="stylesheet",type="text/css")
+    link(rel="stylesheet",href="/css/main.css")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.0/seedrandom.min.js")

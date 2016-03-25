@@ -11,5 +11,6 @@ module.exports = function (id) {
         description: marked(solution.description),
         parameters: solution.parameters,
         solver: solution.solver,
+        starter: solution.starter,
     };
 };

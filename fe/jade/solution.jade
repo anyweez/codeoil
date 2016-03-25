@@ -1,5 +1,7 @@
 html
     include ./partial/head.jade
+    //- Load ACE code editor (used to render content area)
+    script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js")
     script(type="text/javascript")
       //- Set the challenge_id so that it can be used in app.js on a
       //- per-solution basis.
@@ -7,17 +9,22 @@ html
     script(src="/js/app.js")
     
     body
-        h2 #{title}
-        p !{description}
-        pre
-            code
-              | // Example JS code
-              | var a = 7;
-              
-        div(id="code",contentEditable="true")
-          | function hello(num) {
-          |   return num * 2;
-          | }
-        button(id="test") Test solution
-        div(id="status") Unknown
-        button(id="next") Next problem
+        header
+            h1
+                span code
+                span oil
+            if title
+                h2 #{title}
+            div(id='login')
+                p Login with Github
+                img(src="https://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/github-512.png")
+        main(id="content")
+            span(id="description") !{description}
+            
+            div(id="solution-space")
+                div(id="code",contentEditable="true") #{starter}
+            
+                div(id="solution-header")
+                    div Status:&nbsp;
+                        span(id="status") idle
+                    button(id="test") Test solution

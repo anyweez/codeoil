@@ -17,7 +17,7 @@ onmessage = function (event) {
     }
 
     var config = {
-        iterations: event.data.iterations || 100,
+        iterations: event.data.iterations || 1000,
     };
 
     // Eval the user's code and create a function that we can use to evaluate.
