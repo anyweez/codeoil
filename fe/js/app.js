@@ -30,7 +30,6 @@ window.addEventListener('load', function () {
         });
 
         worker.postMessage({
-            iterations: 10,
             seed: 1234,
             code: editor.getValue(),
         });

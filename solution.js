@@ -1,4 +1,4 @@
-/* jslint evil: true, node: true */
+/* jslint evil: true, node: true, esnext: true */
 var solution = require('/* @echo SOLUTION_PATH */');
 
 onmessage = function (event) {
@@ -9,7 +9,6 @@ onmessage = function (event) {
      */
     function loadFunc(raw) {
         raw = 'var func = ' + raw;
-        console.log(raw);
         eval(raw);
 
         // func is built from eval'ing the above code.
@@ -26,16 +25,25 @@ onmessage = function (event) {
     var parameters = solution.parameters;
 
     var failures = 0;
+    var lastNotification = 0.0;
     for (var i = 0; i < config.iterations; i++) {
+        // Generate a new set of params using the specified parameter generators.
+        var params = parameters.map(function (gen) {
+            return gen();
+        });
+
         // TODO: compare outputs more thoroughly
-        if (userFunc(i) !== solution.solver(i)) {
+        if (userFunc.apply(null, params) !== solution.solver.apply(null, params)) {
             failures++;
         }
 
-        postMessage({
-            failures: failures,
-            progress: (i + 1) / config.iterations,
-        });
+        if ((i / config.iterations) - lastNotification > 0.01) {
+            postMessage({
+                failures: failures,
+                progress: (i + 1) / config.iterations,
+            });
+            lastNotification = i / config.iterations;
+        }
 
         // If any test cases fail, stop running.
         if (failures > 0) return;
