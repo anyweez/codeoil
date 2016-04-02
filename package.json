@@ -1,27 +1,36 @@
 {
-  "name": "codeoil",
-  "version": "0.1.0",
-  "description": "Programming practice web app",
-  "main": "gulpfile.js",
-  "scripts": {
-    "test": "gulp"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/anyweez/codeoil.git"
-  },
-  "author": "Luke Segars (@anyweez)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/anyweez/codeoil/issues"
-  },
-  "homepage": "https://github.com/anyweez/codeoil#readme",
-  "dependencies": {
-    "gulp-preprocess": "^2.0.0",
-    "gulp-sass": "^2.2.0",
-    "koa": "^1.2.0",
-    "koa-static": "^2.0.0",
-    "marked": "^0.3.5",
-    "seedrandom": "^2.4.2"
-  }
+    "name": "codeoil",
+    "version": "0.1.0",
+    "description": "Programming practice web app",
+    "main": "gulpfile.js",
+    "scripts": {
+        "test": "gulp"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/anyweez/codeoil.git"
+    },
+    "author": "Luke Segars (@anyweez)",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/anyweez/codeoil/issues"
+    },
+    "homepage": "https://github.com/anyweez/codeoil#readme",
+    "dependencies": {
+        "koa": "^1.2.0",
+        "koa-handlebars": "^0.5.7",
+        "koa-router": "^5.4.0",
+        "koa-send": "^3.2.0",
+        "koa-static": "^2.0.0",
+        "marked": "^0.3.5",
+        "seedrandom": "^2.4.2",
+        "sha1": "^1.1.1"
+    },
+    "devDependencies": {
+        "gulp": "^3.9.1",
+        "gulp-browserify": "^0.5.1",
+        "gulp-concat": "^2.6.0",
+        "gulp-jade": "^1.1.0",
+        "gulp-preprocess": "^2.0.0"
+    }
 }

@@ -1,5 +1,15 @@
 /* jslint browser: true */
 window.addEventListener('load', function () {
+    function beacon(attempt, hash) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/attempt');
+        xhr.send(JSON.stringify({
+            attempt: attempt,
+            hash: hash,
+        }));
+        xhr.send();
+    }
+
     // Load ACE code editor on the #code element
     var editor = ace.edit('code');
     editor.setTheme('ace/theme/xcode');
@@ -7,11 +17,10 @@ window.addEventListener('load', function () {
 
     var testButton = document.getElementById('test');
     testButton.addEventListener('click', function () {
-        var worker = new Worker('http://localhost:3000/solutions/js/' + challenge_id + '.js');
+        var worker = new Worker('http://localhost:3000/solutions/js/' + ctx.challenge + '.js');
         var status = document.getElementById('status');
 
         worker.addEventListener('message', function (event) {
-            console.log('progress: ' + event.data.progress);
             // Remove all current class labels.
             status.className = '';
             // Finished
@@ -27,10 +36,16 @@ window.addEventListener('load', function () {
                 status.textContent = 'failed';
                 status.classList.add('status-failed');
             }
+
+            // Send a beacon
+            if (event.data.hash) {
+                console.log('received token: ' + event.data.hash);
+                beacon(ctx.attempt, event.data.hash);
+            }
         });
 
         worker.postMessage({
-            seed: 1234,
+            seed: ctx.seed,
             code: editor.getValue(),
         });
 

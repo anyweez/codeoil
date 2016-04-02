@@ -5,7 +5,11 @@ html
     script(type="text/javascript")
       //- Set the challenge_id so that it can be used in app.js on a
       //- per-solution basis.
-      | var challenge_id = #{id};
+      | var ctx = {
+      |   challenge: #{id},
+      |   attempt: {{ attempt }},
+      |   seed: {{ seed }},
+      | };
     script(src="/js/app.js")
     
     body
