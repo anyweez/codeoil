@@ -27,20 +27,25 @@ body {
             h3 {
                 font-weight: normal;
                 display: inline-block;
-                width: 75%;
+                width: 50%;
                 margin: 8px 0;
             }
             p {
                 display: inline-block;
                 float: right;
-                width: 15%;
+                width: 45%;
                 margin: 6px 0 8px 0;
                 vertical-align: center;
+                text-align: right;
             }
             .difficulty {
                 font-size: 1.4em;
                 vertical-align: center;
                 padding: 3px;
+            }
+            .difficulty-label {
+                display: inline-block;
+                width: 15%;
             }
         }
         a {

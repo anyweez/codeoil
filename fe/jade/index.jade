@@ -11,8 +11,18 @@ html
                             div(class='problem-overview')
                                 div(class='overview-header')
                                     h3 #{problem.title}
-                                    p Difficulty:
+                                    p 
                                         - for (var i = 0; i < problem.difficulty; i++) {
                                             span(class="difficulty") &#9873;
                                         - }
+                                        if problem.difficulty === 5
+                                            span(class="difficulty-label") Hero
+                                        else if problem.difficulty === 4
+                                            span(class="difficulty-label") Nightmare
+                                        else if problem.difficulty === 3
+                                            span(class="difficulty-label") Hard
+                                        else if problem.difficulty === 2
+                                            span(class="difficulty-label") Normal
+                                        else if problem.difficulty === 1
+                                            span(class="difficulty-label") Warm-up
                                 p !{problem.description}
