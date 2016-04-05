@@ -25,6 +25,9 @@ onmessage = function (event) {
     var userFunc = loadFunc(event.data.code);
     // Import the parameter list.
     var parameters = solution.parameters;
+    parameters.forEach(function (parameter) {
+        parameter.seed();
+    });
 
     var failures = 0;
     var lastNotification = 0.0;
@@ -32,8 +35,8 @@ onmessage = function (event) {
 
     for (var i = 0; i < config.iterations; i++) {
         // Generate a new set of params using the specified parameter generators.
-        var params = parameters.map(function (gen) {
-            return gen();
+        var params = parameters.map(function (param) {
+            return param.next();
         });
 
         // TODO: compare outputs more thoroughly

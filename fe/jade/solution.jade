@@ -13,16 +13,7 @@ html
     script(src="/js/app.js")
     
     body
-        header
-            h1
-                a(href="/")
-                    span code
-                    span oil
-            if title
-                h2 #{title}
-            div(id='login')
-                p Login with Github
-                img(src="https://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/github-512.png")
+        include ./partial/header.jade
         main(id="content")
             span(id="description") !{description}
             

@@ -10,6 +10,7 @@ module.exports = function (id) {
         title: solution.title,
         description: marked(solution.description),
         parameters: solution.parameters,
+        difficulty: solution.difficulty,
         solver: solution.solver,
         starter: solution.starter,
     };

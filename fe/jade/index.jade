@@ -2,4 +2,17 @@ html
     include ./partial/head.jade
     
     body
-        h2 code oil
+        include ./partial/header.jade
+        main(id="content") 
+            ul
+                each problem in problems
+                    li 
+                        a(href="/challenge/#{problem.id}")
+                            div(class='problem-overview')
+                                div(class='overview-header')
+                                    h3 #{problem.title}
+                                    p Difficulty:
+                                        - for (var i = 0; i < problem.difficulty; i++) {
+                                            span(class="difficulty") &#9873;
+                                        - }
+                                p !{problem.description}

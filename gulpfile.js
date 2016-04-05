@@ -9,7 +9,12 @@ var preprocess = require('gulp-preprocess');
 var solutionLoader = require('./loader');
 
 function listSolutions() {
-    return [solutionLoader(1)];
+    return [
+        solutionLoader(1),
+        solutionLoader(2),
+        solutionLoader(3),
+        solutionLoader(4),
+    ];
 }
 
 gulp.task('default', ['html', 'css', 'js', 'solutions']);
@@ -40,7 +45,11 @@ gulp.task('html', function () {
     });
 
     return gulp.src('fe/jade/index.jade')
-        .pipe(jade())
+        .pipe(jade({
+            locals: {
+                problems: solutions,
+            }
+        }))
         .pipe(gulp.dest('public/'));
 });
 
@@ -72,5 +81,5 @@ gulp.task('watch', function () {
     gulp.watch('fe/scss/*.scss', ['css']);
     gulp.watch('fe/js/*.js', ['js']);
     gulp.watch('fe/jade/*.jade', ['html']);
-    gulp.watch('solutions/*.js', ['solutions']);
+    gulp.watch('solutions/*.js', ['solutions', 'html']);
 });
