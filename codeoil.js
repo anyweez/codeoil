@@ -9,7 +9,8 @@ var passport = require('koa-passport');
 var GitHubStrategy = require('passport-github2').Strategy;
 var handlebars = require('koa-handlebars');
 
-var Models = require('./db/models');
+// var Models = require('./db/models');
+var operations = require('./db/operations');
 
 // Create the application and initialize the middleware.
 var app = koa();
@@ -22,28 +23,22 @@ passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/github/callback"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    /*
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
-    */
+}, function (accessToken, refreshToken, profile, done) {
     // TODO: fetch user data and return a custom profile
     done(null, {
-      user: profile.username,
-      url: profile.profileUrl,
-      pic: profile._json.avatar_url,
+        user: profile.username,
+        url: profile.profileUrl,
+        pic: profile._json.avatar_url,
     });
-  }
+}
 ));
 
-passport.serializeUser(function(user, done) {
-  done(null, user);
+passport.serializeUser(function (user, done) {
+    done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
-  done(null, user);
+passport.deserializeUser(function (user, done) {
+    done(null, user);
 });
 
 // Enable sessions and Passport for user logins
@@ -64,11 +59,6 @@ app.use(handlebars({
 // todo: add router.param to verify that challenge exists.
 // https://github.com/alexmingoia/koa-router#module_koa-router--Router+param
 router.get('/challenge/:challenge_id', function* () {
-    // Require authentication.
-    if (!this.isAuthenticated()) this.redirect('/');
-    
-    var challenge_id = this.params.challenge_id;
-
     function attempt() {
         return [
             challenge_id.toString(),
@@ -76,24 +66,32 @@ router.get('/challenge/:challenge_id', function* () {
             Math.round(Math.random() * 100000).toString()
         ].join('');
     }
+    // Require authentication.
+    if (!this.isAuthenticated()) this.redirect('/');
+
+    var challenge_id = this.params.challenge_id;
+    var attempt_id = attempt();
+    var seed = Math.round(Math.random() * 10000000);
+
+    operations.Solve(challenge_id, attempt_id, seed);
 
     yield this.render(`solutions/html/${challenge_id}`, {
-        attempt: attempt(),
-        seed: Math.round(Math.random() * 10000000),
+        attempt: attempt_id,
+        seed: seed,
         authenticated: this.isAuthenticated() ? this.req.user : null,
     });
 });
 
 router.get('/auth/github',
-  passport.authenticate('github', { scope: [ 'user:email' ] })
+    passport.authenticate('github', { scope: ['user:email'] })
 );
 
-router.get('/auth/github/callback', 
-  // TODO: create the /noauth endpoint
-  passport.authenticate('github', { 
-      successRedirect: '/success',
-      failureRedirect: '/noauth',
-  })
+router.get('/auth/github/callback',
+    // TODO: create the /noauth endpoint
+    passport.authenticate('github', {
+        successRedirect: '/success',
+        failureRedirect: '/noauth',
+    })
 );
 
 router.get('/success', function () {
@@ -101,44 +99,29 @@ router.get('/success', function () {
 })
 
 router.get('/logout', function (ctx) {
-   this.logout();
-   this.redirect('/'); 
+    this.logout();
+    this.redirect('/');
 });
 
-router.post('/attempt', function() {
-    var beacon = JSON.parse(this.request.body);
-    
-    // Check to see if this is a correct solution. Afterwards, insert the Attempt into
-    // a separate table and provide a link from Solution => Attempt if this does indeed
-    // provide a valid solution.
-    Models.Solution.sync().then(() => Models.Solution.findOne({
-        where: {
-            attempt: beacon.attempt,
-            hash: beacon.hash,
-        },
-    })).then(function (solution) {
-        // Record the attempt and potentially update the original solution if the solution and
-        // the attempt match.
-        Models.Attempt.sync().then(() => Models.Attempt.create({
-            attempt: beacon.attempt,
-            hash: beacon.hash,
-            correct: (solution !== null) // TODO: which is it?
-        }))
-        .then(function (attempt) {            
-            // Update this value if it's currently unset and the current attempt was correct.
-            // This means that SolvedById will be set to the *first* Attempt that solved it.
-            if (attempt.correct && solution.SolvedById === null) solution.setSolvedBy(attempt);
-        });    
-    });
-    
+/**
+ * Asynchronously log the attempt and trigger side effects (update the solution
+ * record and user profile if needed).
+ */
+router.post('/attempt', function () {
+    try {
+        var request = JSON.parse(this.request.body);
+        console.log(request);
 
-    
-    // Models.Solution.sync().then(() => Models.Solution.create({
-    //     attempt: beacon.attempt,
-    //     hash: beacon.hash,
-    // }));
-    
-    this.response.status = 200;
+        if (request.attempt && request.hash) {
+            operations.LogAttempt(request.attempt, request.hash);
+            this.response.status = 200;
+        } else {
+            this.response.status = 422;
+        }
+    } catch (e) {
+        console.log(e);
+        this.response.status = 400;
+    }
 });
 
 router.get('/', function* (next) {

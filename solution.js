@@ -25,13 +25,14 @@ onmessage = function (event) {
     var userFunc = loadFunc(event.data.code);
     // Import the parameter list.
     var parameters = solution.parameters;
-    parameters.forEach(function (parameter) {
-        parameter.seed(event.data.seed);
+    parameters.forEach(function (parameter, i) {
+        parameter.seed(event.data.seed + i);
     });
 
     var failures = 0;
     var lastNotification = 0.0;
     var agg = aggregator();
+    var sols = [];
 
     for (var i = 0; i < config.iterations; i++) {
         // Generate a new set of params using the specified parameter generators.
@@ -44,6 +45,10 @@ onmessage = function (event) {
         // increment the number of failures and skip aggregation.
         var result = userFunc.apply(null, params);
         agg.add(result);
+        sols.push({
+            params: params,
+            result: result,
+        });
         if (result !== solution.solver.apply(null, params)) failures++;
 
         // if complete with victory
@@ -51,6 +56,7 @@ onmessage = function (event) {
         // otherwise potential status update
         if (i + 1 === config.iterations) {
             postMessage({
+                sols: sols,
                 failures: failures,
                 progress: 1,
                 hash: agg.token(),

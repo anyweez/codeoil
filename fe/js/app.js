@@ -1,5 +1,6 @@
 /* jslint browser: true */
 window.addEventListener('load', function () {
+    console.log(ctx);
     var statusIcon = document.getElementById('solution-button-icon');
     var statusMessage = document.getElementById('solution-button-status');
     
@@ -24,17 +25,18 @@ window.addEventListener('load', function () {
         worker.addEventListener('message', function (event) {
             // Remove all current class labels.
             statusIcon.className = '';
+            console.log(event.data);
 
             // Finished
             if (event.data.failures === 0 && event.data.progress === 1) {
-                statusIcon.textContent = '&#10003;';
+                statusIcon.innerHTML = '&#10003;';
                 statusIcon.classList.add('status-success');
                 statusMessage.textContent = 'Success! Run again';
                 // In progress
             } else if (event.data.failures === 0) {
                 statusIcon.textContent = '?';
                 statusIcon.classList.add('status-in-progress');
-                statusMessage.textContent = `In progress (${event.data.progress * 100}%)`;
+                statusMessage.textContent = `In progress (${Math.round(event.data.progress * 10000) / 100}%)`;
                 // Failed
             } else {
                 statusIcon.textContent = 'X';
@@ -46,8 +48,6 @@ window.addEventListener('load', function () {
             if (event.data.hash) {
                 console.log('received token: ' + event.data.hash);
                 beacon(ctx.attempt, event.data.hash);
-            } else {
-                console.error('No solution hash produced');
             }
         });
 
