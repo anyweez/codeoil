@@ -45,8 +45,8 @@ window.addEventListener('load', function () {
             // Send a beacon
             if (event.data.hash) {
                 console.log('received token: ' + event.data.hash);
-                console.log('disabled beacon');
-                // beacon(ctx.attempt, event.data.hash);
+                // console.log('disabled beacon');
+                beacon(ctx.attempt, event.data.hash);
             }
         });
 

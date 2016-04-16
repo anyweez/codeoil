@@ -1,6 +1,7 @@
 /* jslint node: true, esnext: true */
 var process = require('process');
 var koa = require('koa');
+var body = require('koa-body');
 var send = require('koa-send');
 var router = require('koa-router')();
 var session = require('koa-session');
@@ -49,6 +50,7 @@ app.use(session(app));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(body());
 
 app.use(handlebars({
     root: './public',
@@ -99,6 +101,11 @@ router.get('/success', function () {
 router.get('/logout', function (ctx) {
    this.logout();
    this.redirect('/'); 
+});
+
+router.post('/attempt', function() {
+    var beacon = JSON.parse(this.request.body);
+    console.log(beacon);
 });
 
 router.get('/', function* (next) {
