@@ -10,7 +10,6 @@ window.addEventListener('load', function () {
             attempt: attempt,
             hash: hash,
         }));
-        xhr.send();
     }
 
     // Load ACE code editor on the #code element
@@ -24,9 +23,10 @@ window.addEventListener('load', function () {
 
         worker.addEventListener('message', function (event) {
             // Remove all current class labels.
-            status.className = '';
+            statusIcon.className = '';
+
             // Finished
-            if (event.data.failures === 0 && event.data.progress > 0.99) {
+            if (event.data.failures === 0 && event.data.progress === 1) {
                 statusIcon.textContent = '&#10003;';
                 statusIcon.classList.add('status-success');
                 statusMessage.textContent = 'Success! Run again';
@@ -34,7 +34,7 @@ window.addEventListener('load', function () {
             } else if (event.data.failures === 0) {
                 statusIcon.textContent = '?';
                 statusIcon.classList.add('status-in-progress');
-                statusMessage.textContent = 'In progress';
+                statusMessage.textContent = `In progress (${event.data.progress * 100}%)`;
                 // Failed
             } else {
                 statusIcon.textContent = 'X';
@@ -45,8 +45,9 @@ window.addEventListener('load', function () {
             // Send a beacon
             if (event.data.hash) {
                 console.log('received token: ' + event.data.hash);
-                // console.log('disabled beacon');
                 beacon(ctx.attempt, event.data.hash);
+            } else {
+                console.error('No solution hash produced');
             }
         });
 

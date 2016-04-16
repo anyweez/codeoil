@@ -113,6 +113,8 @@ router.post('/attempt', function() {
         hash: beacon.hash,
         generated: false,
     }));
+    
+    this.response.status = 200;
 });
 
 router.get('/', function* (next) {

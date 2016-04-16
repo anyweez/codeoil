@@ -1,8 +1,8 @@
 /* jslint evil: true, node: true, esnext: true */
-var solution = require('/* @echo SOLUTION_PATH */');
-var aggregator = require('./aggregator');
 
 onmessage = function (event) {
+    var solution = require('/* @echo SOLUTION_PATH */');
+    var aggregator = require('./aggregator');
 
     /**
      * Running `eval` in a separate function so that it doesn't get 
@@ -26,7 +26,7 @@ onmessage = function (event) {
     // Import the parameter list.
     var parameters = solution.parameters;
     parameters.forEach(function (parameter) {
-        parameter.seed();
+        parameter.seed(event.data.seed);
     });
 
     var failures = 0;
@@ -43,11 +43,8 @@ onmessage = function (event) {
         // If the result matches the solver, add it to the aggregator. If not, 
         // increment the number of failures and skip aggregation.
         var result = userFunc.apply(null, params);
-        if (result === solution.solver.apply(null, params)) {
-            agg.add(result);
-        } else {
-            failures++;
-        }
+        agg.add(result);
+        if (result !== solution.solver.apply(null, params)) failures++;
 
         // if complete with victory
         // if complete with failure
@@ -55,7 +52,7 @@ onmessage = function (event) {
         if (i + 1 === config.iterations) {
             postMessage({
                 failures: failures,
-                progress: (i + 1) / config.iterations,
+                progress: 1,
                 hash: agg.token(),
             });
         } else if (failures > 0) {
@@ -69,6 +66,7 @@ onmessage = function (event) {
         } else if ((i / config.iterations) - lastNotification > 0.01) {
             postMessage({
                 failures: failures,
+                hash: null,
                 progress: (i + 1) / config.iterations,
             });
             lastNotification = i / config.iterations;
