@@ -108,11 +108,35 @@ router.get('/logout', function (ctx) {
 router.post('/attempt', function() {
     var beacon = JSON.parse(this.request.body);
     
-    Models.Attempt.sync().then(() => Models.Attempt.create({
-        attempt: beacon.attempt,
-        hash: beacon.hash,
-        generated: false,
-    }));
+    // Check to see if this is a correct solution. Afterwards, insert the Attempt into
+    // a separate table and provide a link from Solution => Attempt if this does indeed
+    // provide a valid solution.
+    Models.Solution.sync().then(() => Models.Solution.findOne({
+        where: {
+            attempt: beacon.attempt,
+            hash: beacon.hash,
+        },
+    })).then(function (solution) {
+        // Record the attempt and potentially update the original solution if the solution and
+        // the attempt match.
+        Models.Attempt.sync().then(() => Models.Attempt.create({
+            attempt: beacon.attempt,
+            hash: beacon.hash,
+            correct: (solution !== null) // TODO: which is it?
+        }))
+        .then(function (attempt) {            
+            // Update this value if it's currently unset and the current attempt was correct.
+            // This means that SolvedById will be set to the *first* Attempt that solved it.
+            if (attempt.correct && solution.SolvedById === null) solution.setSolvedBy(attempt);
+        });    
+    });
+    
+
+    
+    // Models.Solution.sync().then(() => Models.Solution.create({
+    //     attempt: beacon.attempt,
+    //     hash: beacon.hash,
+    // }));
     
     this.response.status = 200;
 });
