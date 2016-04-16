@@ -2,16 +2,27 @@ header {
     padding: 15px 1%;
     background-color: #BFD8BD;
     width: 100%;
+    height: 80px;
     box-sizing: border-box;
     border-bottom: 3px solid #98C9A3;
     a {
         text-decoration: none;
         color: inherit;
     }
-    h1 {
+    #logo {
+        img {
+            vertical-align: middle;
+            width: 36px;
+            margin-right: 12px;
+        }
+        h1 {
+            vertical-align: middle;
+            display: inline-block;
+            font-size: 2.6em;
+            margin: 0;
+        }
         display: inline-block;
         margin: 0 1%;
-        vertical-align: middle;
         font-weight: normal;
     }
     h2 {
@@ -26,7 +37,8 @@ header {
         float: right;
         vertical-align: middle;
         text-align: right;
-        padding: 3px 8px;
+        padding: 8px 8px;
+        height: 45px;
         
         img {
             width: 25px;
@@ -38,14 +50,19 @@ header {
             vertical-align: middle;
             margin: 0;
             margin-right: 10px;
+            
+            .highlight {
+                font-weight: 700;
+            }
         }
     }
     
     #logged-in {
         img {
-            border: 1px solid black;
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
+            border-radius: 3px;
+            box-shadow: 0 0 6px #333;
         }
     }
 }

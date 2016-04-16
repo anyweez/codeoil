@@ -12,8 +12,11 @@ html
                                 div(class='overview-header')
                                     h3 #{problem.title}
                                     p 
-                                        - for (var i = 0; i < problem.difficulty; i++) {
-                                            span(class="difficulty") &#9873;
+                                        - for (var i = 0; i < 5; i++) {
+                                            if (i < problem.difficulty)
+                                                span(class="difficulty") &#9873;
+                                            else
+                                                span(class="difficulty disabled") &#9873;
                                         - }
                                         if problem.difficulty === 5
                                             span(class="difficulty-label") Nightmare

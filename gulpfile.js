@@ -17,7 +17,7 @@ function listSolutions() {
     ];
 }
 
-gulp.task('default', ['html', 'css', 'js', 'solutions']);
+gulp.task('default', ['html', 'css', 'js', 'solutions', 'img']);
 
 gulp.task('css', function () {
     return gulp.src('fe/scss/main.scss')
@@ -76,10 +76,16 @@ gulp.task('solutions', function () {
     });
 });
 
+gulp.task('img', function() {
+    return gulp.src('fe/img/*')
+        .pipe(gulp.dest('./public/img'));
+});
 
 gulp.task('watch', function () {
     gulp.watch('fe/scss/*.scss', ['css']);
     gulp.watch('fe/js/*.js', ['js']);
     gulp.watch('fe/jade/*.jade', ['html']);
+    gulp.watch('fe/jade/partial/*.jade', ['html']);
+    gulp.watch('fe/img/*', ['img']);
     gulp.watch('solutions/*.js', ['solutions', 'html']);
 });

@@ -1,5 +1,8 @@
 /* jslint browser: true */
 window.addEventListener('load', function () {
+    var statusIcon = document.getElementById('solution-button-icon');
+    var statusMessage = document.getElementById('solution-button-status');
+    
     function beacon(attempt, hash) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/attempt');
@@ -15,32 +18,35 @@ window.addEventListener('load', function () {
     editor.setTheme('ace/theme/xcode');
     editor.getSession().setMode('ace/mode/javascript');
 
-    var testButton = document.getElementById('test');
+    var testButton = document.getElementById('solution-button');
     testButton.addEventListener('click', function () {
         var worker = new Worker('http://localhost:3000/solutions/js/' + ctx.challenge + '.js');
-        var status = document.getElementById('status');
 
         worker.addEventListener('message', function (event) {
             // Remove all current class labels.
             status.className = '';
             // Finished
             if (event.data.failures === 0 && event.data.progress > 0.99) {
-                status.textContent = 'success';
-                status.classList.add('status-success');
+                statusIcon.textContent = '&#10003;';
+                statusIcon.classList.add('status-success');
+                statusMessage.textContent = 'Success! Run again';
                 // In progress
             } else if (event.data.failures === 0) {
-                status.textContent = 'in progress';
-                status.classList.add('status-in-progress');
+                statusIcon.textContent = '?';
+                statusIcon.classList.add('status-in-progress');
+                statusMessage.textContent = 'In progress';
                 // Failed
             } else {
-                status.textContent = 'failed';
-                status.classList.add('status-failed');
+                statusIcon.textContent = 'X';
+                statusIcon.classList.add('status-failed');
+                statusMessage.textContent = 'Failed! Run again';
             }
 
             // Send a beacon
             if (event.data.hash) {
                 console.log('received token: ' + event.data.hash);
-                beacon(ctx.attempt, event.data.hash);
+                console.log('disabled beacon');
+                // beacon(ctx.attempt, event.data.hash);
             }
         });
 
