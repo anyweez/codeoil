@@ -16,13 +16,13 @@ html
                                             span(class="difficulty") &#9873;
                                         - }
                                         if problem.difficulty === 5
-                                            span(class="difficulty-label") Hero
-                                        else if problem.difficulty === 4
                                             span(class="difficulty-label") Nightmare
+                                        else if problem.difficulty === 4
+                                            span(class="difficulty-label") Challenge
                                         else if problem.difficulty === 3
                                             span(class="difficulty-label") Hard
                                         else if problem.difficulty === 2
                                             span(class="difficulty-label") Normal
                                         else if problem.difficulty === 1
-                                            span(class="difficulty-label") Warm-up
+                                            span(class="difficulty-label") Beginner
                                 p !{problem.description}

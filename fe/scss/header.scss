@@ -21,12 +21,13 @@ header {
         font-weight: 300;
         text-transform: lowercase;
     }
-    #login {
+    #login, #logged-in {
         display: inline-block;
         float: right;
         vertical-align: middle;
         text-align: right;
         padding: 3px 8px;
+        
         img {
             width: 25px;
             height: 25px;
@@ -37,6 +38,14 @@ header {
             vertical-align: middle;
             margin: 0;
             margin-right: 10px;
+        }
+    }
+    
+    #logged-in {
+        img {
+            border: 1px solid black;
+            width: 30px;
+            height: 30px;
         }
     }
 }

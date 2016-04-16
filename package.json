@@ -2,7 +2,7 @@
   "name": "codeoil",
   "version": "0.1.0",
   "description": "Programming practice web app",
-  "main": "gulpfile.js",
+  "main": "codeoil.js",
   "scripts": {
     "test": "gulp"
   },
@@ -20,10 +20,13 @@
     "chai": "^3.5.0",
     "koa": "^1.2.0",
     "koa-handlebars": "^0.5.7",
+    "koa-passport": "^1.3.1",
     "koa-router": "^5.4.0",
     "koa-send": "^3.2.0",
+    "koa-session": "^3.3.1",
     "koa-static": "^2.0.0",
     "marked": "^0.3.5",
+    "passport-github2": "^0.1.10",
     "seedrandom": "^2.4.2",
     "sha1": "^1.1.1"
   },

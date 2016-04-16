@@ -5,6 +5,15 @@ header
             span oil
     if title
         h2 #{title}
-    div(id='login')
-        p Login with Github
-        img(src="https://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/github-512.png")
+        
+    {{#if authenticated}}
+    a(href='/profile')
+        div(id='logged-in')
+            p {{ authenticated.user }}
+            img(src="{{ authenticated.pic }}")
+    {{else}}
+    a(href='/auth/github')
+        div(id='login')
+            p Login with Github
+            img(src="https://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/github-512.png")
+    {{/if}}
