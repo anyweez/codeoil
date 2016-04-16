@@ -7,7 +7,9 @@ var router = require('koa-router')();
 var session = require('koa-session');
 var passport = require('koa-passport');
 var GitHubStrategy = require('passport-github2').Strategy;
-var handlebars = require("koa-handlebars");
+var handlebars = require('koa-handlebars');
+
+var Models = require('./db/models');
 
 // Create the application and initialize the middleware.
 var app = koa();
@@ -105,7 +107,12 @@ router.get('/logout', function (ctx) {
 
 router.post('/attempt', function() {
     var beacon = JSON.parse(this.request.body);
-    console.log(beacon);
+    
+    Models.Attempt.sync().then(() => Models.Attempt.create({
+        attempt: beacon.attempt,
+        hash: beacon.hash,
+        generated: false,
+    }));
 });
 
 router.get('/', function* (next) {
