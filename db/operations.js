@@ -15,6 +15,56 @@ client.on('connect', function () {
 }).connect();
 
 module.exports = {
+    LoadOrCreateUser: function (profile) {
+        /**
+         * Load the user from the users table if they exist.
+         */
+        function LoadUser() {
+            var target = null;
+            
+            return Models.User.findOne({
+                where: {
+                    githubId: profile.id,
+                }
+            }).then(function (user) {
+                target = user.get({
+                    plain: true,
+                });
+                
+                return Models.Status.sync().then(() => Models.Status.findAll({
+                    where: {
+                        UserId: user.id,
+                    }
+                }));
+            }).then(function (challenges) {
+                target.challenges = challenges.map( (challenge) => challenge.get({ plain: true }) );
+                return target;
+            });
+        }
+        
+        /**
+         * Create a new user if they don't yet exist.
+         */
+        function CreateUser() {
+            return Models.User.create({
+                githubId: profile.id,
+                githubUsername: profile.username,
+            }).then(() => Models.Status.sync());
+        }
+        
+        /**
+         * Confirm whether we need to create or load depending on whether the user
+         * already exists.
+         */
+        return Models.User.sync().then(() => Models.User.findOne({
+            where: {
+                githubId: profile.id,
+            }
+        })).then(function (user) {
+            if (user) return LoadUser();
+            else return CreateUser();
+        });
+    },
     LogAttempt: function (attemptId, hash) {
         // Check to see if this is a correct solution. Afterwards, insert the Attempt into
         // a separate table and provide a link from Solution => Attempt if this does indeed

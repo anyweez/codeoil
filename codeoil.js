@@ -24,14 +24,14 @@ passport.use(new GitHubStrategy({
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/github/callback"
 }, function (accessToken, refreshToken, profile, done) {
-    // TODO: fetch user data and return a custom profile
-    done(null, {
-        user: profile.username,
-        url: profile.profileUrl,
-        pic: profile._json.avatar_url,
+    operations.LoadOrCreateUser(profile).then(function (user) {
+        user.name = profile.username;
+        user.url = profile.profileUrl;
+        user.pic = profile._json.avatar_url;
+
+        done(null, user);
     });
-}
-));
+}));
 
 passport.serializeUser(function (user, done) {
     done(null, user);
@@ -110,7 +110,6 @@ router.get('/logout', function (ctx) {
 router.post('/attempt', function () {
     try {
         var request = JSON.parse(this.request.body);
-        console.log(request);
 
         if (request.attempt && request.hash) {
             operations.LogAttempt(request.attempt, request.hash);
@@ -119,7 +118,7 @@ router.post('/attempt', function () {
             this.response.status = 422;
         }
     } catch (e) {
-        console.log(e);
+        console.error(e);
         this.response.status = 400;
     }
 });

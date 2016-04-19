@@ -9,7 +9,7 @@ header
     div(id='logged-in')
         a(href='/profile')
             p logged in as 
-                span(class='highlight') {{ authenticated.user }}
+                span(class='highlight') {{ authenticated.name }}
             img(src="{{ authenticated.pic }}")
     {{else}}
     div(id='login')
