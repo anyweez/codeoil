@@ -53,6 +53,17 @@ app.use(handlebars({
     root: './public',
     extension: 'html',
     viewsDir: '.',
+    helpers: {
+        'challengeClass': function (user, challengeId) {
+            if (user === null) return 'unfinished';
+
+            var solved = user.challenges.find( 
+                (challenge) => challenge.challengeId === challengeId && challenge.status == 'SOLVED'
+            );
+            
+            return (solved !== undefined) ? 'finished' : 'unfinished';
+        },
+    },
 }));
 
 // Route for serving all practice problems.

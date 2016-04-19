@@ -6,7 +6,7 @@ html
         main(id="content") 
             ul
                 each problem in problems
-                    li 
+                    li(class="{{ challengeClass authenticated #{problem.id} }}")
                         a(href="/challenge/#{problem.id}")
                             div(class='problem-overview')
                                 div(class='overview-header')

@@ -3,7 +3,7 @@ var fivebeans = require('fivebeans');
 
 var client = new fivebeans.client('localhost', 11300);
 client.on('connect', function () {
-    client.use('solutions', function(err) {
+    client.use('solutions', function (err) {
         if (err) console.error(err);
     });
 }).on('error', function (err) {
@@ -21,7 +21,7 @@ module.exports = {
          */
         function LoadUser() {
             var target = null;
-            
+
             return Models.User.findOne({
                 where: {
                     githubId: profile.id,
@@ -30,28 +30,31 @@ module.exports = {
                 target = user.get({
                     plain: true,
                 });
-                
+
                 return Models.Status.sync().then(() => Models.Status.findAll({
                     where: {
                         UserId: user.id,
                     }
                 }));
             }).then(function (challenges) {
-                target.challenges = challenges.map( (challenge) => challenge.get({ plain: true }) );
+                target.challenges = challenges.map((challenge) => challenge.get({ plain: true }));
                 return target;
             });
         }
-        
+
         /**
          * Create a new user if they don't yet exist.
          */
         function CreateUser() {
-            return Models.User.create({
+            return Models.Status.sync().then(() => Models.User.create({
                 githubId: profile.id,
                 githubUsername: profile.username,
-            }).then(() => Models.Status.sync());
+            })).then(function (user) {
+                user.challenges = [];
+                return user;
+            });
         }
-        
+
         /**
          * Confirm whether we need to create or load depending on whether the user
          * already exists.
@@ -101,12 +104,12 @@ module.exports = {
                 attempt: attemptId,
                 seed: seed,
             },
-        }), function() {});
+        }), function () { });
     },
-    RegisterSolution: function(attempt, hash) {
+    RegisterSolution: function (attempt, hash) {
         Models.Solution.sync().then(() => Models.Solution.create({
-               attempt: attempt,
-               hash: hash
+            attempt: attempt,
+            hash: hash
         }));
     },
 };
