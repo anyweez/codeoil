@@ -27,9 +27,14 @@ module.exports = (function () {
     };
 
     // Add a key connecting the solution to the model that first solved it
-    models.Solution.belongsTo(models.Attempt, { as: 'SolvedBy' });
-    models.Solution.belongsTo(models.User, { as: 'User' });
-    models.Status.belongsTo(models.User, { as: 'User' });
+    models.Solution.belongsTo(models.Attempt, { as: 'attemptId' });
+    models.Solution.belongsTo(models.User, { as: 'solvedBy' });
+    models.Status.belongsTo(models.User, { as: 'user' });
+
+    models.Attempt.sync()
+        .then(() => models.User.sync())
+        .then(() => models.Solution.sync())
+        .then(() => models.Status.sync());
 
     return models;
 })();

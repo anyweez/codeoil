@@ -8,17 +8,20 @@ var session = require('koa-session');
 var passport = require('koa-passport');
 var GitHubStrategy = require('passport-github2').Strategy;
 var handlebars = require('koa-handlebars');
+var logger = require('koa-logger')
 
 // var Models = require('./db/models');
 var operations = require('./db/operations');
 
 // Create the application and initialize the middleware.
 var app = koa();
+app.use(logger())
 
-// Configure passport with the Github strategy and set up serialization and
-// deserialization (basically no-ops). I'm currently building an EXTREMELY
-// basic profile using only information from Github's profile. I need to
-// join this with my own profile information.
+/**
+ * Configure passport with the Github strategy and set up serialization and
+ * deserialization (basically no-ops). Once we get the Github response, join
+ * this with application-specific profile data.
+ */
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -33,13 +36,8 @@ passport.use(new GitHubStrategy({
     });
 }));
 
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function (user, done) {
-    done(null, user);
-});
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
 
 // Enable sessions and Passport for user logins
 app.keys = ['standard-secret']; // FIXME: randomize this
@@ -49,6 +47,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(body());
 
+/**
+ * Set up Handlebars middleware so that all files served from public/ with
+ * an .html extension will be processed.
+ * 
+ * I also define a single helper here that contains some view-specific logic.
+ */
 app.use(handlebars({
     root: './public',
     extension: 'html',
@@ -70,6 +74,12 @@ app.use(handlebars({
 // todo: add router.param to verify that challenge exists.
 // https://github.com/alexmingoia/koa-router#module_koa-router--Router+param
 router.get('/challenge/:challenge_id', function* () {
+    // Require authentication.
+    if (!this.isAuthenticated()) this.redirect('/');
+    if (isNaN(parseInt(this.params.challenge_id))) {
+        this.throw('Invalid challenge ID specified', 400);
+    }
+
     function attempt() {
         return [
             challenge_id.toString(),
@@ -77,8 +87,6 @@ router.get('/challenge/:challenge_id', function* () {
             Math.round(Math.random() * 100000).toString()
         ].join('');
     }
-    // Require authentication.
-    if (!this.isAuthenticated()) this.redirect('/');
 
     var challenge_id = this.params.challenge_id;
     var attempt_id = attempt();

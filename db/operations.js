@@ -31,11 +31,11 @@ module.exports = {
                     plain: true,
                 });
 
-                return Models.Status.sync().then(() => Models.Status.findAll({
+                return Models.Status.findAll({
                     where: {
                         UserId: user.id,
                     }
-                }));
+                });
             }).then(function (challenges) {
                 target.challenges = challenges.map((challenge) => challenge.get({ plain: true }));
                 return target;
@@ -46,10 +46,10 @@ module.exports = {
          * Create a new user if they don't yet exist.
          */
         function CreateUser() {
-            return Models.Status.sync().then(() => Models.User.create({
+            return Models.User.create({
                 githubId: profile.id,
                 githubUsername: profile.username,
-            })).then(function (user) {
+            }).then(function (user) {
                 user.challenges = [];
                 return user;
             });
@@ -75,24 +75,23 @@ module.exports = {
         //
         // This is all async; the /attempt endpoint does not return a meaningful value but
         // will update the user's profile asynchronously.
-        Models.Solution.sync().then(() => Models.Solution.findOne({
+        return Models.Solution.findOne({
             where: {
                 attempt: attemptId,
                 hash: hash,
             },
-        })).then(function (solution) {
+        }).then(function (solution) {
             // Record the attempt and potentially update the original solution if the solution and
             // the attempt match.
-            Models.Attempt.sync().then(() => Models.Attempt.create({
+            return Models.Attempt.create({
                 attempt: attemptId,
                 hash: hash,
                 correct: (solution !== null),
-            }))
-                .then(function (attempt) {
-                    // Update this value if it's currently unset and the current attempt was correct.
-                    // This means that SolvedById will be set to the *first* Attempt that solved it.
-                    if (attempt.correct && solution.SolvedById === null) solution.setSolvedBy(attempt);
-                });
+            }).then(function (attempt) {
+                // Update this value if it's currently unset and the current attempt was correct.
+                // This means that SolvedById will be set to the *first* Attempt that solved it.
+                if (attempt.correct && solution.solvedById === null) solution.setSolvedBy(attempt);
+            });
         });
     },
     // Submit a solution solver request to the workers.
@@ -107,9 +106,9 @@ module.exports = {
         }), function () { });
     },
     RegisterSolution: function (attempt, hash) {
-        Models.Solution.sync().then(() => Models.Solution.create({
+        return Models.Solution.create({
             attempt: attempt,
             hash: hash
-        }));
+        });
     },
 };
