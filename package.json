@@ -39,6 +39,7 @@
     "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.6.0",
     "gulp-jade": "^1.1.0",
-    "gulp-preprocess": "^2.0.0"
+    "gulp-preprocess": "^2.0.0",
+    "gulp-sass": "^2.3.1"
   }
 }
