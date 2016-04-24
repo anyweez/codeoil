@@ -1,5 +1,10 @@
 var Sequelize = require('sequelize');
-var sequelize = new Sequelize('codeoil', 'codeoil', '');
+var process = require('process');
+var sequelize = new Sequelize(
+    process.env.MYSQL_CODEOIL_DATABASE, 
+    process.env.MYSQL_CODEOIL_USERNAME, 
+    process.env.MYSQL_CODEOIL_PASSWORD
+);
 
 module.exports = (function () {
     var models = {
