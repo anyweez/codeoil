@@ -4,7 +4,7 @@
   "description": "Programming practice web app",
   "main": "codeoil.js",
   "scripts": {
-    "test": "gulp"
+    "test": "gulp; mocha"
   },
   "repository": {
     "type": "git",
