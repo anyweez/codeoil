@@ -1,4 +1,5 @@
 /* jslint node: true */
+'use strict'
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var jade = require('gulp-jade');
@@ -9,13 +10,22 @@ var preprocess = require('gulp-preprocess');
 var solutionLoader = require('./loader');
 
 function listSolutions() {
-    return [
+    let solutions = [
         solutionLoader(1),
         solutionLoader(2),
         solutionLoader(3),
         solutionLoader(4),
         solutionLoader(5),
     ];
+    
+    solutions.sort(function (first, second) {
+        if (first.difficulty < second.difficulty) return -1;
+        if (first.difficulty > second.difficulty) return 1;
+        
+        return 0;
+    });
+    
+    return solutions;
 }
 
 gulp.task('default', ['html', 'css', 'js', 'solutions', 'img']);
