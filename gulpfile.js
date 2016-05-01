@@ -54,6 +54,10 @@ gulp.task('html', function () {
             .pipe(concat(solution.id + '.html'))
             .pipe(gulp.dest('public/solutions/html/'));
     });
+    
+    gulp.src('fe/jade/partial/logo.jade')
+        .pipe(jade())
+        .pipe(gulp.dest('public/'));
 
     return gulp.src('fe/jade/index.jade')
         .pipe(jade({

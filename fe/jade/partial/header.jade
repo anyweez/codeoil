@@ -1,6 +1,8 @@
 header   
-    h1(id='logo')
-        a(href='/') jam 
+    a(href='/')
+        div(id='logo')
+            img(src='/img/logo.png')
+            p climb
     if title
         h2 #{title}
         
@@ -14,5 +16,4 @@ header
     div(class='login',id='login')
         a(href='/auth/github')
             p Login with Github
-            img(src="https://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/github-512.png")
     {{/if}}

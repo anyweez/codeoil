@@ -11,6 +11,10 @@ html
                     h2 {{ authenticated.name }}
                     h3 1st place among active users
                     h3 Skill level: tbd | XX questions answered
+            {{else}}
+            div(id='welcome')
+                h2 Welcome to programming practice.
+                h3 All practice problems are available below, sorted by difficulty. #[a(href='/login') Sign in] to get started.
             {{/if}}
             ul
                 each problem in problems
@@ -21,11 +25,12 @@ html
                                     h3 #{problem.title}
                                     p 
                                         - for (var i = 0; i < 5; i++) {
-                                            if (i < problem.difficulty)
+                                        -    if (i < problem.difficulty)
                                                 span(class="difficulty") &#9873;
-                                            else
+                                        -    else
                                                 span(class="difficulty disabled") &#9873;
                                         - }
+                                        
                                         if problem.difficulty === 5
                                             span(class="difficulty-label") Nightmare
                                         else if problem.difficulty === 4
@@ -37,3 +42,5 @@ html
                                         else if problem.difficulty === 1
                                             span(class="difficulty-label") Beginner
                                 p !{problem.summary}
+                                
+        include ./partial/footer.jade

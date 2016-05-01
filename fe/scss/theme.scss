@@ -12,6 +12,10 @@ body {
     display: flex;
     flex-direction: column;
     
+    h3 {
+        font-weight: normal;
+    }
+        
     #profile {
         img {
             width: 120px;
@@ -28,7 +32,6 @@ body {
         
             h3 {
                 margin: 8px 0;
-                font-weight: normal;
             }
         }
     }
@@ -103,8 +106,6 @@ main {
         }
     }
     padding: 1%;
-    display: flex;
-    flex-direction: column;
     #solution-space {
         flex: 1;
         position: relative;
