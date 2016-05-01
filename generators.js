@@ -1,4 +1,5 @@
 /* jslint node: true */
+'use strict'
 var seedrandom = require('seedrandom');
 var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
@@ -44,13 +45,47 @@ module.exports = {
 
         var gen = new Generator();
         gen.set('min', 0);
-        gen.set('max', 25);
+        gen.set('max', 1000);
         gen.set('distr', props.prob);
+
+        let available = {};
+        let totalProb = 0.0;
+        let explicitLetters = [];
+        // Copy over all known letters.
+        for (let letter in props.prob) {
+            available[letter] = props.prob[letter];
+            totalProb += props.prob[letter];
+            
+            explicitLetters.push(letter);
+        }
+        
+        for (let letter of letters) {
+            // When we find a letter that hasn't been added yet, add it with a share of
+            // the remaining probability.
+            if (explicitLetters.indexOf(letter) === -1) {
+                available[letter] = (1.0 - totalProb) / (letters.length - explicitLetters.length);            
+            }
+        }
+        
         gen.next = function () {
-            var length = this.random();
+            var length = Math.round(this.random() * 30);
             var chars = [];
-            for (var i = 0; i < length; i++) {
-                chars.push(letters[this.random()]);
+           
+            for (let i = 0; i < length; i++) {
+                // Select a random probability
+                let prob = this.random(); 
+
+                // Iterate through all available letters until we exceed the cumultative probability
+                // from above.
+                for (let ltr = 0; ltr < letters.length; ltr++) {
+                    let current = letters[ltr];
+                    prob -= available[current];
+                    
+                    if (prob <= 0) {
+                        chars.push(current);
+                        break;
+                    }              
+                }
             }
 
             return chars.join('');

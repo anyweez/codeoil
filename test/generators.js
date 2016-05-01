@@ -24,6 +24,41 @@ describe('generators work as expected', function () {
             expect(str).to.be.a('string');
         }
     });
+    
+    it('generates strings based on probability distributions', function () {
+        // Test with two characters that sum to 100%
+        var gen = generators.String({
+            prob: {
+                x: 0.5,
+                y: 0.5,
+            },
+        });
+        
+        gen.seed(Date.now());
+        
+        for (var i = 0; i < test_iterations; i++) {
+            var str = gen.next();
+            expect(str).to.be.a('string');
+            expect(str.replace(/[xy]+/g, '')).to.have.length(0);
+        }
+        
+        // Test with two characters that sum to 100%
+        gen = generators.String({
+            prob: {
+                a: 0.4,
+                b: 0.4,
+                c: 0.2,
+            },
+        });
+        
+        gen.seed(Date.now());
+        
+        for (var i = 0; i < test_iterations; i++) {
+            var str = gen.next();
+            expect(str).to.be.a('string');
+            expect(str.replace(/[abc]+/g, '')).to.have.length(0);
+        }
+    });
 
     it('generates arrays of numbers of various lengths', function () {
         var gen = generators.NumArray();

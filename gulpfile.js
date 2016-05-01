@@ -16,6 +16,7 @@ function listSolutions() {
         solutionLoader(3),
         solutionLoader(4),
         solutionLoader(5),
+        solutionLoader(6),
     ];
     
     solutions.sort(function (first, second) {
@@ -55,10 +56,6 @@ gulp.task('html', function () {
             .pipe(gulp.dest('public/solutions/html/'));
     });
     
-    gulp.src('fe/jade/partial/logo.jade')
-        .pipe(jade())
-        .pipe(gulp.dest('public/'));
-
     return gulp.src('fe/jade/index.jade')
         .pipe(jade({
             locals: {
