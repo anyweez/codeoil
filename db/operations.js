@@ -3,6 +3,7 @@ var fivebeans = require('fivebeans');
 
 var client = new fivebeans.client('localhost', 11300);
 client.on('connect', function () {
+    console.log('Connected to beanstalkd');
     client.use('solutions', function (err) {
         if (err) console.error(err);
     });
