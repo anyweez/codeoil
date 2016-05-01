@@ -1,18 +1,17 @@
 header   
-    a(id='logo', href='/')
-        img(src='/img/logo.png')
-        h1 code oil
+    h1(id='logo')
+        a(href='/') jam 
     if title
         h2 #{title}
         
     {{#if authenticated}}
-    div(id='logged-in')
-        a(href='/profile')
+    div(class='login',id='logged-in')
+        a(href='/logout')
             p logged in as 
                 span(class='highlight') {{ authenticated.name }}
             img(src="{{ authenticated.pic }}")
     {{else}}
-    div(id='login')
+    div(class='login',id='login')
         a(href='/auth/github')
             p Login with Github
             img(src="https://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/github-512.png")

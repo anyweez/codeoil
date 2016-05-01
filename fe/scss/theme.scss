@@ -1,14 +1,38 @@
+
 html,
 body {
     height: 100%;
 }
 
 body {
-    background-color: #DDE7C7;
+    background-color: #E8EDDF;
+    padding-top: 50px;
     margin: 0;
     font-family: 'Lato', sans-serif;
     display: flex;
     flex-direction: column;
+    
+    #profile {
+        img {
+            width: 120px;
+            height: 120px;
+            margin: 5px 5px 5px 0;
+            border: 1px solid $background-color;
+        }
+        #profile-info {
+            display: inline-block;
+            vertical-align: top; 
+            h2 {    
+                margin: 10px 0;
+            }
+        
+            h3 {
+                margin: 8px 0;
+                font-weight: normal;
+            }
+        }
+    }
+    
     ul {
         list-style-type: none;
         padding: 0;
@@ -17,7 +41,7 @@ body {
     li {
         padding: 0 0 5px 0;
         margin: 10px 0;
-        border-left: 8px solid #333;
+        border-left: 8px solid $background-color;
         background-color: white;
         
         &.finished {
@@ -28,7 +52,7 @@ body {
         }
         
         .overview-header {
-            background-color: #333;
+            background-color: $background-color;
             padding: 5px 15px 5px 5px;
             margin: 3px 0;
             color: #ccc;
@@ -81,7 +105,7 @@ main {
         }
         #solution-button {
             cursor: pointer;
-            border: 1px solid #333;
+            border: 1px solid $background-color;
             position: absolute;
             right: 20px;
             top: 20px;
@@ -89,14 +113,14 @@ main {
             border-radius: 3px;
             
             background-color: #EDEEC9;
-            border: 2px solid #333;
+            border: 2px solid $background-color;
             box-shadow: 0 0 3px #999;
             
             #solution-button-icon {
                 background-color: limegreen;
                 padding: 10px 15px;   
                 display: inline-block;
-                border-right: 1px solid #333;
+                border-right: 1px solid $background-color;
             }
             
             #solution-button-status {

@@ -4,6 +4,14 @@ html
     body
         include ./partial/header.jade
         main(id="content") 
+            {{#if authenticated}}
+            div(id='profile')
+                img(src="{{ authenticated.pic }}")
+                div(id='profile-info')
+                    h2 {{ authenticated.name }}
+                    h3 1st place among active users
+                    h3 Skill level: tbd | XX questions answered
+            {{/if}}
             ul
                 each problem in problems
                     li(class="{{ challengeClass authenticated #{problem.id} }}")
