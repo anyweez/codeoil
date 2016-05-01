@@ -102,6 +102,7 @@ module.exports = {
                     Models.Status.create({
                         challengeId: solution.challengeId,
                         status: 'SOLVED',
+                        user: user,
                     });
                 }
             });
@@ -118,10 +119,12 @@ module.exports = {
             },
         }), function () { });
     },
-    RegisterSolution: function (attempt, hash) {
+    RegisterSolution: function (payload, hash) {
         return Models.Solution.create({
-            attempt: attempt,
-            hash: hash
+            attempt: payload.attempt,
+            hash: hash,
+            seed: payload.seed,
+            challengeId: payload.challenge,
         });
     },
 };
