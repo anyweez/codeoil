@@ -14,6 +14,7 @@ function listSolutions() {
         solutionLoader(2),
         solutionLoader(3),
         solutionLoader(4),
+        solutionLoader(5),
     ];
 }
 

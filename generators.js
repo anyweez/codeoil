@@ -75,5 +75,32 @@ module.exports = {
         };
 
         return gen;
+    },
+    Object: function (props) {
+        props = props || {};
+        var gen = new Generator();
+        
+        var orig = gen.seed.bind(gen);
+        gen.seed = function (seed) {
+            orig(seed);
+            
+            var i = 2;
+            for (var p in props) {
+                props[p].seed((seed * i) % 100000);
+                i++;
+            }
+        };
+        
+        gen.next = function () {
+            var obj = {};          
+            
+            for (var p in props) {
+                obj[p] = props[p].next();            
+            }
+            
+            return obj
+        };
+        
+        return gen;
     }
 };

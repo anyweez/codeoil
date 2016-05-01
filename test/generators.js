@@ -34,4 +34,22 @@ describe('generators work as expected', function () {
             expect(arr).to.be.an('array');
         }
     });
+    
+    it('generates objects that contain other generators as properties', function () {
+        var gen = generators.Object({
+            first: generators.Integer(),
+            second: generators.Integer(),
+        });
+        
+        gen.seed(Date.now());
+
+        for (var i = 0; i < test_iterations; i++) {
+            var arr = gen.next();
+            expect(arr).to.be.an('object');
+            expect(arr).to.have.property('first');
+            expect(arr).to.have.property('second');
+            expect(arr.first).to.be.a('number');
+            expect(arr.second).to.be.a('number');
+        }
+    });
 });
