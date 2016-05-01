@@ -69,7 +69,7 @@ module.exports = {
             else return CreateUser();
         });
     },
-    LogAttempt: function (attemptId, hash) {
+    LogAttempt: function (user, attemptId, hash) {
         // Check to see if this is a correct solution. Afterwards, insert the Attempt into
         // a separate table and provide a link from Solution => Attempt if this does indeed
         // provide a valid solution.
@@ -95,8 +95,14 @@ module.exports = {
                 // Update this value if it's currently unset and the current attempt was correct.
                 // This means that SolvedById will be set to the *first* Attempt that solved it.
                 if (attempt.correct && solution.solvedById === null) {
-                    solution.setSolvedBy(attempt);
-                    solution.save();
+                    solution.setCorrectAttempt(attempt);
+                    solution.setSolvedBy(user);
+                    
+                    // Create a new record in the status table.
+                    Models.Status.create({
+                        challengeId: solution.challengeId,
+                        status: 'SOLVED',
+                    });
                 }
             });
         });

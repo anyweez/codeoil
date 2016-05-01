@@ -128,10 +128,11 @@ router.get('/logout', function (ctx) {
  */
 router.post('/attempt', function () {
     try {
+        if (!this.isAuthenticated()) throw Exception('You must be logged in to submit an attempt.');
         var request = JSON.parse(this.request.body);
 
         if (request.attempt && request.hash) {
-            operations.LogAttempt(request.attempt, request.hash);
+            operations.LogAttempt(this.req.user, request.attempt, request.hash);
             this.response.status = 200;
         } else {
             this.response.status = 422;
