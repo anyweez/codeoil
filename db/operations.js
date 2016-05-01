@@ -76,6 +76,9 @@ module.exports = {
         //
         // This is all async; the /attempt endpoint does not return a meaningful value but
         // will update the user's profile asynchronously.
+        //
+        // Note to future self: this logic assumes that the solution from the task runners will
+        // be available prior to the user's guess. This should be fine but worth noting...
         return Models.Solution.findOne({
             where: {
                 attempt: attemptId,
@@ -91,7 +94,10 @@ module.exports = {
             }).then(function (attempt) {
                 // Update this value if it's currently unset and the current attempt was correct.
                 // This means that SolvedById will be set to the *first* Attempt that solved it.
-                if (attempt.correct && solution.solvedById === null) solution.setSolvedBy(attempt);
+                if (attempt.correct && solution.solvedById === null) {
+                    solution.setSolvedBy(attempt);
+                    solution.save();
+                }
             });
         });
     },
