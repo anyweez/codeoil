@@ -40,6 +40,16 @@ module.exports = {
 
         return gen;
     },
+    Float: function (props) {
+        props = props || {};
+        
+        var gen = new Generator();
+        gen.set('min', props.min || 0);
+        gen.set('max', props.max || 1000);
+        gen.next = function () {
+            return this.random() * this.properties.max;
+        }
+    },
     String: function (props) {
         props = props || {};
 

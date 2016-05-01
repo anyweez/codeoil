@@ -17,6 +17,7 @@ function listSolutions() {
         solutionLoader(4),
         solutionLoader(5),
         solutionLoader(6),
+        solutionLoader(7),
     ];
     
     solutions.sort(function (first, second) {
