@@ -1,4 +1,5 @@
 /* jslint node: true, esnext: true */
+'use strict'
 var process = require('process');
 var koa = require('koa');
 var body = require('koa-body');
@@ -61,10 +62,10 @@ app.use(handlebars({
         'challengeClass': function (user, challengeId) {
             if (user === null) return 'unfinished';
 
-            var solved = user.challenges.find( 
+            var solved = user.challenges.find(
                 (challenge) => challenge.challengeId === challengeId && challenge.status == 'SOLVED'
             );
-            
+
             return (solved !== undefined) ? 'finished' : 'unfinished';
         },
     },
@@ -117,7 +118,7 @@ router.get('/success', function () {
     this.redirect('/');
 })
 
-router.get('/logout', function (ctx) {
+router.get('/logout', function () {
     this.logout();
     this.redirect('/');
 });
@@ -128,10 +129,11 @@ router.get('/logout', function (ctx) {
  */
 router.post('/attempt', function () {
     try {
+        if (!this.isAuthenticated()) throw Exception('You must be logged in to submit an attempt.');
         var request = JSON.parse(this.request.body);
 
         if (request.attempt && request.hash) {
-            operations.LogAttempt(request.attempt, request.hash);
+            operations.LogAttempt(this.req.user, request.attempt, request.hash);
             this.response.status = 200;
         } else {
             this.response.status = 422;
@@ -142,10 +144,15 @@ router.post('/attempt', function () {
     }
 });
 
-router.get('/', function* (next) {
+router.get('/', function* () {
+    let user = null;
+    if (this.isAuthenticated()) {
+        user = yield operations.LoadQuestionStatuses(this.req.user); //.then(function (user) {
+    }
+    
     yield this.render('index', {
-        authenticated: this.isAuthenticated() ? this.req.user : null,
-    })
+        authenticated: user,
+    });
 });
 
 // Attach router as middleware.

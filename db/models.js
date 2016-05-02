@@ -32,7 +32,7 @@ module.exports = (function () {
     };
 
     // Add a key connecting the solution to the model that first solved it
-    models.Solution.belongsTo(models.Attempt, { as: 'attemptId' });
+    models.Solution.belongsTo(models.Attempt, { as: 'correctAttempt' });
     models.Solution.belongsTo(models.User, { as: 'solvedBy' });
     models.Status.belongsTo(models.User, { as: 'user' });
 

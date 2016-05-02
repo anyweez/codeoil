@@ -32,6 +32,7 @@ module.exports = {
                     plain: true,
                 });
 
+                // Same as LoadQuestionStatuses below.
                 return Models.Status.findAll({
                     where: {
                         UserId: user.id,
@@ -69,13 +70,27 @@ module.exports = {
             else return CreateUser();
         });
     },
-    LogAttempt: function (attemptId, hash) {
+    // Get the latest player status for each question.
+    LoadQuestionStatuses: function (user) {
+        return Models.Status.findAll({
+            where: {
+                UserId: user.id,
+            }
+        }).then(function (challenges) {
+            user.challenges = challenges.map((challenge) => challenge.get({ plain: true }));
+            return user;
+        })
+    },
+    LogAttempt: function (user, attemptId, hash) {
         // Check to see if this is a correct solution. Afterwards, insert the Attempt into
         // a separate table and provide a link from Solution => Attempt if this does indeed
         // provide a valid solution.
         //
         // This is all async; the /attempt endpoint does not return a meaningful value but
         // will update the user's profile asynchronously.
+        //
+        // Note to future self: this logic assumes that the solution from the task runners will
+        // be available prior to the user's guess. This should be fine but worth noting...
         return Models.Solution.findOne({
             where: {
                 attempt: attemptId,
@@ -91,7 +106,17 @@ module.exports = {
             }).then(function (attempt) {
                 // Update this value if it's currently unset and the current attempt was correct.
                 // This means that SolvedById will be set to the *first* Attempt that solved it.
-                if (attempt.correct && solution.solvedById === null) solution.setSolvedBy(attempt);
+                if (attempt.correct && solution.solvedById === null) {
+                    solution.setCorrectAttempt(attempt);
+                    // TODO: set SolvedBy field (currently giving me annoying error...)
+
+                    // Create a new record in the status table.
+                    Models.Status.create({
+                        challengeId: solution.challengeId,
+                        status: 'SOLVED',
+                        userId: user.id,
+                    });
+                }
             });
         });
     },
@@ -106,10 +131,12 @@ module.exports = {
             },
         }), function () { });
     },
-    RegisterSolution: function (attempt, hash) {
+    RegisterSolution: function (payload, hash) {
         return Models.Solution.create({
-            attempt: attempt,
-            hash: hash
+            attempt: payload.attempt,
+            hash: hash,
+            seed: payload.seed,
+            challengeId: payload.challenge,
         });
     },
 };
