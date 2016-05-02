@@ -32,6 +32,7 @@ module.exports = {
                     plain: true,
                 });
 
+                // Same as LoadQuestionStatuses below.
                 return Models.Status.findAll({
                     where: {
                         UserId: user.id,
@@ -69,6 +70,17 @@ module.exports = {
             else return CreateUser();
         });
     },
+    // Get the latest player status for each question.
+    LoadQuestionStatuses: function (user) {
+        return Models.Status.findAll({
+            where: {
+                UserId: user.id,
+            }
+        }).then(function (challenges) {
+            user.challenges = challenges.map((challenge) => challenge.get({ plain: true }));
+            return user;
+        })
+    },
     LogAttempt: function (user, attemptId, hash) {
         // Check to see if this is a correct solution. Afterwards, insert the Attempt into
         // a separate table and provide a link from Solution => Attempt if this does indeed
@@ -96,13 +108,13 @@ module.exports = {
                 // This means that SolvedById will be set to the *first* Attempt that solved it.
                 if (attempt.correct && solution.solvedById === null) {
                     solution.setCorrectAttempt(attempt);
-                    solution.setSolvedBy(user);
-                    
+                    // TODO: set SolvedBy field (currently giving me annoying error...)
+
                     // Create a new record in the status table.
                     Models.Status.create({
                         challengeId: solution.challengeId,
                         status: 'SOLVED',
-                        user: user,
+                        userId: user.id,
                     });
                 }
             });

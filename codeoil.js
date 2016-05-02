@@ -144,9 +144,17 @@ router.post('/attempt', function () {
 });
 
 router.get('/', function* (next) {
-    yield this.render('index', {
-        authenticated: this.isAuthenticated() ? this.req.user : null,
-    })
+    if (this.isAuthenticated()) {
+        operations.LoadQuestionStatuses(this.req.user).then(function (user) {
+             yield this.render('index', {
+                authenticated: user,
+            })
+        });
+    } else {
+        yield this.render('index', {
+            authenticated: null,
+        });
+    }
 });
 
 // Attach router as middleware.
