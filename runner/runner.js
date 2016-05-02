@@ -30,11 +30,11 @@ SolutionHandler.prototype.work = function (payload, callback) {
             return param.next();
         });
 
-        console.log(params, solution.solver.apply(null, params));
+        // console.log(params, solution.solver.apply(null, params));
         agg.add(solution.solver.apply(null, params));
     }
 
-    operations.RegisterSolution(payload.attempt, agg.token());
+    operations.RegisterSolution(payload, agg.token());
     callback('success');
 }
 
