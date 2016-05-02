@@ -20,7 +20,7 @@ window.addEventListener('load', function () {
 
     var testButton = document.getElementById('solution-button');
     testButton.addEventListener('click', function () {
-        var worker = new Worker(`http://climb.queencityiron.com:3000/solutions/js/${ctx.challenge}.js`);
+        var worker = new Worker(`http://climb.queencityiron.com/solutions/js/${ctx.challenge}.js`);
 
         worker.addEventListener('message', function (event) {
             // Remove all current class labels.

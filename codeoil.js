@@ -25,7 +25,7 @@ app.use(logger())
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: (process.env.CODEOIL_DEV ? 'http://localhost:3000' : 'http://climb.queencityiron.com:3000') + '/auth/github/callback',
+    callbackURL: (process.env.CODEOIL_DEV ? 'http://localhost:3000' : 'http://climb.queencityiron.com') + '/auth/github/callback',
 }, function (accessToken, refreshToken, profile, done) {
     operations.LoadOrCreateUser(profile).then(function (user) {
         user.name = profile.username;
